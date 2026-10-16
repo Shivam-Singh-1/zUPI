@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 450" width="100%" height="100%">
   <defs>
     <!-- Background Gradient -->
     <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -21,178 +21,220 @@
       <feGaussianBlur stdDeviation="5" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
+    <filter id="ackGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
 
     <style>
       @keyframes hopParticle {
-        0%, 15%   { transform: translate(120px, 120px); }
-        22%, 35%  { transform: translate(310px, 120px); }
-        42%, 55%  { transform: translate(500px, 120px); }
-        62%, 75%  { transform: translate(690px, 120px); }
-        82%, 100% { transform: translate(880px, 120px); }
+        0%, 15%   { transform: translate(120px, 95px); }
+        22%, 35%  { transform: translate(310px, 95px); }
+        42%, 55%  { transform: translate(500px, 95px); }
+        62%, 75%  { transform: translate(690px, 95px); }
+        82%, 100% { transform: translate(880px, 95px); }
+      }
+      @keyframes reverseAckTravel {
+        0%, 20%  { transform: translate(880px, 350px); opacity: 0; }
+        35%      { opacity: 1; }
+        85%, 100%{ transform: translate(120px, 350px); opacity: 1; }
       }
       @keyframes dashFlow {
         0% { stroke-dashoffset: 40; }
         100% { stroke-dashoffset: 0; }
       }
+      @keyframes ackDashFlow {
+        0% { stroke-dashoffset: 0; }
+        100% { stroke-dashoffset: 40; }
+      }
       @keyframes waveEmit {
         0% { r: 12px; opacity: 0.9; stroke-width: 2; }
-        100% { r: 38px; opacity: 0; stroke-width: 0.5; }
+        100% { r: 36px; opacity: 0; stroke-width: 0.5; }
       }
       .hop-dash { stroke-dasharray: 6, 6; animation: dashFlow 1.5s linear infinite; }
+      .ack-dash { stroke-dasharray: 6, 4; animation: ackDashFlow 1.2s linear infinite; }
       .packet-orb { animation: hopParticle 6s ease-in-out infinite; }
-      .ble-wave { animation: waveEmit 2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite; }
-      .ble-wave-d1 { animation: waveEmit 2s cubic-bezier(0.1, 0.7, 0.1, 1) 0.5s infinite; }
-      .ble-wave-d2 { animation: waveEmit 2s cubic-bezier(0.1, 0.7, 0.1, 1) 1.0s infinite; }
-      .ble-wave-d3 { animation: waveEmit 2s cubic-bezier(0.1, 0.7, 0.1, 1) 1.5s infinite; }
+      .ack-orb { animation: reverseAckTravel 5s ease-in-out infinite; }
+      .ble-wave { animation: waveEmit 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) infinite; }
+      .ble-wave-d1 { animation: waveEmit 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) 0.5s infinite; }
+      .ble-wave-d2 { animation: waveEmit 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) 1.0s infinite; }
+      .ble-wave-d3 { animation: waveEmit 2.2s cubic-bezier(0.1, 0.7, 0.1, 1) 1.5s infinite; }
     </style>
   </defs>
 
   <!-- Canvas Background -->
-  <rect width="1000" height="420" rx="16" fill="url(#bgGrad2)" stroke="#30363d" stroke-width="1.5" />
+  <rect width="1000" height="450" rx="16" fill="url(#bgGrad2)" stroke="#30363d" stroke-width="1.5" />
 
   <!-- Title Bar -->
   <g transform="translate(40, 24)">
     <rect x="0" y="0" width="26" height="26" rx="13" fill="#38bdf8" fill-opacity="0.2" />
     <text x="13" y="18" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" text-anchor="middle">2</text>
-    <text x="36" y="19" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700" letter-spacing="0.3">STEP 2: PEER-TO-PEER BLUETOOTH MESH GOSSIP (MULTI-HOP RELAY)</text>
+    <text x="36" y="19" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700" letter-spacing="0.3">STEP 2: BLE GOSSIP RELAY &amp; REVERSE ACK BUFFER PURGE</text>
     
-    <rect x="760" y="2" width="200" height="24" rx="12" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="1" />
-    <text x="860" y="18" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">📶 BLE ADV &amp; GATT CHARACTERISTICS</text>
+    <rect x="740" y="2" width="220" height="24" rx="12" fill="#10b981" fill-opacity="0.18" stroke="#10b981" stroke-width="1" />
+    <text x="850" y="18" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">🔄 BIDIRECTIONAL ACK GOSSIP</text>
   </g>
 
-  <!-- OVERHEAD HOP TRACK (y=65 to y=145) -->
+  <!-- OVERHEAD FORWARD HOP TRACK (y=50 to y=125) -->
   <g>
     <!-- Hop Arc 1 -->
-    <path d="M 120 120 C 180 70, 250 70, 310 120" fill="none" stroke="#38bdf8" stroke-width="2.5" class="hop-dash" />
-    <rect x="195" y="70" width="40" height="18" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="1" />
-    <text x="215" y="83" fill="#38bdf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 1</text>
+    <path d="M 120 95 C 180 50, 250 50, 310 95" fill="none" stroke="#38bdf8" stroke-width="2.5" class="hop-dash" />
+    <rect x="195" y="48" width="40" height="18" rx="4" fill="#0f172a" stroke="#38bdf8" stroke-width="1" />
+    <text x="215" y="61" fill="#38bdf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 1</text>
 
     <!-- Hop Arc 2 -->
-    <path d="M 310 120 C 370 70, 440 70, 500 120" fill="none" stroke="#60a5fa" stroke-width="2.5" class="hop-dash" />
-    <rect x="385" y="70" width="40" height="18" rx="4" fill="#0f172a" stroke="#60a5fa" stroke-width="1" />
-    <text x="405" y="83" fill="#60a5fa" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 2</text>
+    <path d="M 310 95 C 370 50, 440 50, 500 95" fill="none" stroke="#60a5fa" stroke-width="2.5" class="hop-dash" />
+    <rect x="385" y="48" width="40" height="18" rx="4" fill="#0f172a" stroke="#60a5fa" stroke-width="1" />
+    <text x="405" y="61" fill="#60a5fa" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 2</text>
 
     <!-- Hop Arc 3 -->
-    <path d="M 500 120 C 560 70, 630 70, 690 120" fill="none" stroke="#818cf8" stroke-width="2.5" class="hop-dash" />
-    <rect x="575" y="70" width="40" height="18" rx="4" fill="#0f172a" stroke="#818cf8" stroke-width="1" />
-    <text x="595" y="83" fill="#818cf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 3</text>
+    <path d="M 500 95 C 560 50, 630 50, 690 95" fill="none" stroke="#818cf8" stroke-width="2.5" class="hop-dash" />
+    <rect x="575" y="48" width="40" height="18" rx="4" fill="#0f172a" stroke="#818cf8" stroke-width="1" />
+    <text x="595" y="61" fill="#818cf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Hop 3</text>
 
     <!-- Hop Arc 4 to Bridge -->
-    <path d="M 690 120 C 750 70, 820 70, 880 120" fill="none" stroke="#34d399" stroke-width="3" class="hop-dash" />
-    <rect x="765" y="70" width="40" height="18" rx="4" fill="#0f172a" stroke="#34d399" stroke-width="1" />
-    <text x="785" y="83" fill="#34d399" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Bridge</text>
+    <path d="M 690 95 C 750 50, 820 50, 880 95" fill="none" stroke="#34d399" stroke-width="3" class="hop-dash" />
+    <rect x="765" y="48" width="44" height="18" rx="4" fill="#0f172a" stroke="#34d399" stroke-width="1" />
+    <text x="787" y="61" fill="#34d399" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">Bridge</text>
   </g>
 
   <!-- Overhead Animated Travelling Packet Orb -->
   <g class="packet-orb">
-    <circle cx="0" cy="0" r="11" fill="#38bdf8" filter="url(#packetGlow)" />
-    <circle cx="0" cy="0" r="6" fill="#ffffff" />
-    <text x="0" y="-16" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">pkt-987</text>
+    <circle cx="0" cy="0" r="10" fill="#38bdf8" filter="url(#packetGlow)" />
+    <circle cx="0" cy="0" r="5" fill="#ffffff" />
+    <text x="0" y="-15" fill="#38bdf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">pkt-987</text>
   </g>
 
-  <!-- 5 DEVICE CARDS (y=150, h=200, w=160 each, x=40, 230, 420, 610, 800) -->
+  <!-- 5 DEVICE CARDS (y=125, h=200, w=160 each, x=40, 230, 420, 610, 800) -->
 
   <!-- Device 1: phone-alice -->
-  <g transform="translate(40, 150)">
+  <g transform="translate(40, 125)">
     <rect width="160" height="200" rx="12" fill="url(#deviceOffline)" stroke="#38bdf8" stroke-width="1.5" />
     <rect x="0" y="0" width="160" height="34" rx="12" fill="#0f172a" />
     <text x="80" y="22" fill="#e2e8f0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">phone-alice</text>
     
-    <rect x="35" y="44" width="90" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
-    <text x="80" y="58" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <rect x="35" y="42" width="90" height="18" rx="9" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="80" y="55" fill="#f87171" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
 
     <!-- BLE Node Center Icon with Waves -->
-    <circle cx="80" cy="98" class="ble-wave" fill="none" stroke="#38bdf8" />
-    <circle cx="80" cy="98" r="18" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
-    <text x="80" y="104" fill="#38bdf8" font-size="15" text-anchor="middle">📱</text>
+    <circle cx="80" cy="94" class="ble-wave" fill="none" stroke="#38bdf8" />
+    <circle cx="80" cy="94" r="17" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="80" y="100" fill="#38bdf8" font-size="14" text-anchor="middle">📱</text>
 
     <!-- Metadata Details -->
-    <rect x="14" y="130" width="132" height="24" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
-    <text x="80" y="146" fill="#34d399" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 5 (Origin)</text>
+    <rect x="14" y="124" width="132" height="22" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="80" y="139" fill="#34d399" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">TTL: 5 (Origin)</text>
 
-    <text x="80" y="174" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Basement Sender</text>
+    <!-- Seen-Set & ACK State -->
+    <rect x="14" y="152" width="132" height="38" rx="4" fill="#030712" />
+    <text x="80" y="167" fill="#38bdf8" font-family="monospace" font-size="8.5" text-anchor="middle">seenHashes.has() ✓</text>
+    <text x="80" y="182" fill="#34d399" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">ACK: buffer.size=0</text>
   </g>
 
   <!-- Device 2: phone-stranger1 -->
-  <g transform="translate(230, 150)">
+  <g transform="translate(230, 125)">
     <rect width="160" height="200" rx="12" fill="url(#deviceOffline)" stroke="#60a5fa" stroke-width="1.5" />
     <rect x="0" y="0" width="160" height="34" rx="12" fill="#0f172a" />
     <text x="80" y="22" fill="#e2e8f0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">stranger-1</text>
     
-    <rect x="35" y="44" width="90" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
-    <text x="80" y="58" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <rect x="35" y="42" width="90" height="18" rx="9" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="80" y="55" fill="#f87171" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
 
-    <circle cx="80" cy="98" class="ble-wave-d1" fill="none" stroke="#60a5fa" />
-    <circle cx="80" cy="98" r="18" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5" />
-    <text x="80" y="104" fill="#60a5fa" font-size="15" text-anchor="middle">📱</text>
+    <circle cx="80" cy="94" class="ble-wave-d1" fill="none" stroke="#60a5fa" />
+    <circle cx="80" cy="94" r="17" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5" />
+    <text x="80" y="100" fill="#60a5fa" font-size="14" text-anchor="middle">📱</text>
 
-    <rect x="14" y="130" width="132" height="24" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
-    <text x="80" y="146" fill="#60a5fa" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 4 (-1 Hop)</text>
+    <rect x="14" y="124" width="132" height="22" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="80" y="139" fill="#60a5fa" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">TTL: 4 (Relayed)</text>
 
-    <text x="80" y="174" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Escalator Relay</text>
+    <rect x="14" y="152" width="132" height="38" rx="4" fill="#030712" />
+    <text x="80" y="167" fill="#60a5fa" font-family="monospace" font-size="8.5" text-anchor="middle">Loop-Free Filtered</text>
+    <text x="80" y="182" fill="#34d399" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">ACK: buffer.size=0</text>
   </g>
 
   <!-- Device 3: phone-stranger2 -->
-  <g transform="translate(420, 150)">
+  <g transform="translate(420, 125)">
     <rect width="160" height="200" rx="12" fill="url(#deviceOffline)" stroke="#818cf8" stroke-width="1.5" />
     <rect x="0" y="0" width="160" height="34" rx="12" fill="#0f172a" />
     <text x="80" y="22" fill="#e2e8f0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">stranger-2</text>
     
-    <rect x="35" y="44" width="90" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
-    <text x="80" y="58" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <rect x="35" y="42" width="90" height="18" rx="9" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="80" y="55" fill="#f87171" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
 
-    <circle cx="80" cy="98" class="ble-wave-d2" fill="none" stroke="#818cf8" />
-    <circle cx="80" cy="98" r="18" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
-    <text x="80" y="104" fill="#818cf8" font-size="15" text-anchor="middle">📱</text>
+    <circle cx="80" cy="94" class="ble-wave-d2" fill="none" stroke="#818cf8" />
+    <circle cx="80" cy="94" r="17" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
+    <text x="80" y="100" fill="#818cf8" font-size="14" text-anchor="middle">📱</text>
 
-    <rect x="14" y="130" width="132" height="24" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
-    <text x="80" y="146" fill="#818cf8" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 3 (-1 Hop)</text>
+    <rect x="14" y="124" width="132" height="22" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="80" y="139" fill="#818cf8" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">TTL: 3 (Relayed)</text>
 
-    <text x="80" y="174" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Corridor Relay</text>
+    <rect x="14" y="152" width="132" height="38" rx="4" fill="#030712" />
+    <text x="80" y="167" fill="#818cf8" font-family="monospace" font-size="8.5" text-anchor="middle">Loop-Free Filtered</text>
+    <text x="80" y="182" fill="#34d399" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">ACK: buffer.size=0</text>
   </g>
 
   <!-- Device 4: phone-stranger3 -->
-  <g transform="translate(610, 150)">
+  <g transform="translate(610, 125)">
     <rect width="160" height="200" rx="12" fill="url(#deviceOffline)" stroke="#a78bfa" stroke-width="1.5" />
     <rect x="0" y="0" width="160" height="34" rx="12" fill="#0f172a" />
     <text x="80" y="22" fill="#e2e8f0" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">stranger-3</text>
     
-    <rect x="35" y="44" width="90" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
-    <text x="80" y="58" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <rect x="35" y="42" width="90" height="18" rx="9" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="80" y="55" fill="#f87171" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
 
-    <circle cx="80" cy="98" class="ble-wave-d3" fill="none" stroke="#a78bfa" />
-    <circle cx="80" cy="98" r="18" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5" />
-    <text x="80" y="104" fill="#a78bfa" font-size="15" text-anchor="middle">📱</text>
+    <circle cx="80" cy="94" class="ble-wave-d3" fill="none" stroke="#a78bfa" />
+    <circle cx="80" cy="94" r="17" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5" />
+    <text x="80" y="100" fill="#a78bfa" font-size="14" text-anchor="middle">📱</text>
 
-    <rect x="14" y="130" width="132" height="24" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
-    <text x="80" y="146" fill="#a78bfa" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 2 (-1 Hop)</text>
+    <rect x="14" y="124" width="132" height="22" rx="4" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="80" y="139" fill="#a78bfa" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">TTL: 2 (Relayed)</text>
 
-    <text x="80" y="174" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" text-anchor="middle">Exit Ramp Relay</text>
+    <rect x="14" y="152" width="132" height="38" rx="4" fill="#030712" />
+    <text x="80" y="167" fill="#a78bfa" font-family="monospace" font-size="8.5" text-anchor="middle">Loop-Free Filtered</text>
+    <text x="80" y="182" fill="#34d399" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">ACK: buffer.size=0</text>
   </g>
 
   <!-- Device 5: phone-bridge (ONLINE) -->
-  <g transform="translate(800, 150)">
+  <g transform="translate(800, 125)">
     <rect width="160" height="200" rx="12" fill="url(#deviceBridge)" stroke="#10b981" stroke-width="2" />
     <rect x="0" y="0" width="160" height="34" rx="12" fill="#065f46" />
     <text x="80" y="22" fill="#ecfdf5" font-family="monospace" font-size="11" font-weight="700" text-anchor="middle">phone-bridge</text>
     
-    <rect x="30" y="44" width="100" height="20" rx="10" fill="#10b981" fill-opacity="0.3" stroke="#10b981" stroke-width="1" />
-    <text x="80" y="58" fill="#6ee7b7" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🌐 4G ONLINE</text>
+    <rect x="30" y="42" width="100" height="18" rx="9" fill="#10b981" fill-opacity="0.3" stroke="#10b981" stroke-width="1" />
+    <text x="80" y="55" fill="#6ee7b7" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">🌐 4G ONLINE</text>
 
-    <circle cx="80" cy="98" r="18" fill="#064e3b" stroke="#34d399" stroke-width="2" />
-    <text x="80" y="104" fill="#34d399" font-size="15" text-anchor="middle">📡</text>
+    <circle cx="80" cy="94" r="17" fill="#064e3b" stroke="#34d399" stroke-width="2" />
+    <text x="80" y="100" fill="#34d399" font-size="14" text-anchor="middle">📡</text>
 
-    <rect x="14" y="130" width="132" height="24" rx="4" fill="#022c22" stroke="#10b981" stroke-width="1" />
-    <text x="80" y="146" fill="#34d399" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 1 (Upload Ready)</text>
+    <rect x="14" y="124" width="132" height="22" rx="4" fill="#022c22" stroke="#10b981" stroke-width="1" />
+    <text x="80" y="139" fill="#34d399" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">TTL: 1 (Uploads)</text>
 
-    <text x="80" y="174" fill="#6ee7b7" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="600" text-anchor="middle">Reaches 4G Surface</text>
+    <rect x="14" y="152" width="132" height="38" rx="4" fill="#022c22" />
+    <text x="80" y="167" fill="#34d399" font-family="monospace" font-size="8.5" font-weight="700" text-anchor="middle">Settles on Server</text>
+    <text x="80" y="182" fill="#6ee7b7" font-family="monospace" font-size="8.5" text-anchor="middle">Broadcasts ACK ↺</text>
   </g>
 
-  <!-- BOTTOM FOOTER CALLOUT (y=365) -->
-  <g transform="translate(40, 365)">
-    <rect width="920" height="38" rx="8" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
-    <text x="24" y="24" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12">
-      🔒 <tspan fill="#f0f6fc" font-weight="600">Zero-Trust Security Guarantee:</tspan> Relays only see opaque ciphertexts. No stranger can read amounts, discover PINs, or forge payment recipients.
+  <!-- UNDERHEAD REVERSE SETTLEMENT ACK TRACK (y=345 to y=380) -->
+  <g>
+    <!-- Reverse ACK Flow Line -->
+    <path d="M 880 350 L 120 350" fill="none" stroke="#10b981" stroke-width="2.5" class="ack-dash" />
+    <polygon points="120,345 110,350 120,355" fill="#10b981" />
+    
+    <!-- ACK Traveling Marker -->
+    <g class="ack-orb">
+      <circle cx="0" cy="0" r="9" fill="#10b981" filter="url(#ackGlow)" />
+      <circle cx="0" cy="0" r="4.5" fill="#ffffff" />
+    </g>
+
+    <rect x="360" y="338" width="280" height="24" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="1" />
+    <text x="500" y="354" fill="#a7f3d0" font-family="monospace" font-size="9.5" font-weight="700" text-anchor="middle">↺ REVERSE SETTLEMENT ACK (PURGES BUFFER)</text>
+  </g>
+
+  <!-- BOTTOM FOOTER CALLOUT (y=395) -->
+  <g transform="translate(40, 395)">
+    <rect width="920" height="36" rx="8" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="24" y="23" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11.5">
+      💡 <tspan fill="#38bdf8" font-weight="600">Dual-Protection Mesh:</tspan> <tspan fill="#f0f6fc">seenHashes Set</tspan> blocks redundant gossip loops; <tspan fill="#34d399">settledHashes ACK</tspan> immediately frees offline phone storage.
     </text>
   </g>
 </svg>
