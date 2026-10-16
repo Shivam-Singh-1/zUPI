@@ -1,138 +1,179 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 420" width="100%" height="100%">
   <defs>
+    <!-- Background Gradient -->
     <linearGradient id="bgGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0b0f19" />
-      <stop offset="100%" stop-color="#161b22" />
+      <stop offset="0%" stop-color="#0d1117" />
+      <stop offset="50%" stop-color="#111827" />
+      <stop offset="100%" stop-color="#0d1117" />
     </linearGradient>
-    <linearGradient id="gateGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+
+    <!-- Card Gradients -->
+    <linearGradient id="gateCardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#1e293b" />
       <stop offset="100%" stop-color="#0f172a" />
     </linearGradient>
-    <linearGradient id="settledGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="settledCardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#064e3b" />
       <stop offset="100%" stop-color="#022c22" />
     </linearGradient>
 
-    <filter id="greenGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <filter id="emeraldGlow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="6" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
-    <filter id="shieldGlow" x="-30%" y="-30%" width="160%" height="160%">
+    <filter id="amberGlow" x="-30%" y="-30%" width="160%" height="160%">
       <feGaussianBlur stdDeviation="6" result="blur" />
       <feComposite in="SourceGraphic" in2="blur" operator="over" />
     </filter>
 
     <style>
-      @keyframes reqAEnter {
-        0% { transform: translateX(-40px); opacity: 0; }
-        40%, 100% { transform: translateX(0px); opacity: 1; }
+      @keyframes reqAForward {
+        0%, 100% { transform: translateX(0); opacity: 1; }
+        50% { transform: translateX(6px); opacity: 0.9; }
       }
-      @keyframes reqBDeflect {
-        0% { transform: translate(-30px, 0); opacity: 0; }
-        40% { transform: translate(0px, 0); opacity: 1; }
-        70%, 100% { transform: translate(40px, 30px); opacity: 0.3; }
+      @keyframes shieldGlowPulse {
+        0%, 100% { filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.4)); }
+        50% { filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.9)); }
       }
-      @keyframes shieldPulse {
-        0%, 100% { stroke-opacity: 0.6; }
-        50% { stroke-opacity: 1; filter: drop-shadow(0 0 8px rgba(245,158,11,0.8)); }
+      @keyframes stampBeat {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.6)); }
+        50% { transform: scale(1.08); filter: drop-shadow(0 0 12px rgba(16, 185, 129, 1)); }
       }
-      @keyframes checkmarkPop {
-        0%, 30% { transform: scale(0.8); opacity: 0.2; }
-        60%, 100% { transform: scale(1.05); opacity: 1; }
+      @keyframes streamArrow {
+        0% { stroke-dashoffset: 24; }
+        100% { stroke-dashoffset: 0; }
       }
-      .req-a { animation: reqAEnter 3.5s ease-in-out infinite; }
-      .req-b { animation: reqBDeflect 3.5s ease-in-out infinite; }
-      .cas-shield { animation: shieldPulse 2s ease-in-out infinite; }
-      .settled-stamp { transform-origin: 755px 245px; animation: checkmarkPop 3.5s ease-in-out infinite; }
+      .anim-req-a { animation: reqAForward 2.5s ease-in-out infinite; }
+      .shield-anim { transform-origin: 470px 145px; animation: shieldGlowPulse 2.5s ease-in-out infinite; }
+      .stamp-anim { transform-origin: 900px 115px; animation: stampBeat 3s ease-in-out infinite; }
+      .flow-arrow { stroke-dasharray: 6, 4; animation: streamArrow 1.2s linear infinite; }
     </style>
   </defs>
 
-  <!-- Background Canvas -->
-  <rect width="880" height="340" rx="16" fill="url(#bgGrad4)" stroke="#30363d" stroke-width="1.5" />
+  <!-- Canvas Background -->
+  <rect width="1000" height="420" rx="16" fill="url(#bgGrad4)" stroke="#30363d" stroke-width="1.5" />
 
-  <!-- Section Header -->
-  <g transform="translate(32, 34)">
-    <circle cx="10" cy="10" r="10" fill="#38bdf8" fill-opacity="0.2" />
-    <text x="10" y="15" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">4</text>
-    <text x="32" y="15" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" letter-spacing="0.3">STEP 4: ATOMIC CAS IDEMPOTENCY GATE &amp; DETERMINISTIC LEDGER SETTLE</text>
-    <rect x="730" y="0" width="118" height="22" rx="11" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
-    <text x="789" y="15" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" text-anchor="middle">✓ ACID COMMITTED</text>
+  <!-- Title Bar -->
+  <g transform="translate(40, 24)">
+    <rect x="0" y="0" width="26" height="26" rx="13" fill="#38bdf8" fill-opacity="0.2" />
+    <text x="13" y="18" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="13" font-weight="700" text-anchor="middle">4</text>
+    <text x="36" y="19" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="16" font-weight="700" letter-spacing="0.3">STEP 4: ATOMIC CAS IDEMPOTENCY GATE &amp; DETERMINISTIC SETTLEMENT</text>
+    
+    <rect x="760" y="2" width="200" height="24" rx="12" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
+    <text x="860" y="18" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">✓ ACID COMMITTED (0ms)</text>
   </g>
 
-  <!-- Left: Inbound Requests A & B -->
-  <g transform="translate(48, 80)">
+  <!-- COLUMN 1: INBOUND CONCURRENT REQUESTS (x=50, y=70, w=240, h=310) -->
+  <g transform="translate(50, 70)">
     <!-- Request A (Winner) -->
-    <g class="req-a">
-      <rect width="180" height="90" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
-      <text x="14" y="24" fill="#34d399" font-family="monospace" font-size="10" font-weight="700">Request A (T+0ms)</text>
-      <text x="14" y="44" fill="#94a3b8" font-family="monospace" font-size="9">Bridge: phone-bridge</text>
-      <text x="14" y="62" fill="#e2e8f0" font-family="monospace" font-size="9">Hash: 51c858462984...</text>
-      <rect x="14" y="68" width="94" height="16" rx="4" fill="#047857" />
-      <text x="61" y="80" fill="#ffffff" font-family="monospace" font-size="8" font-weight="700" text-anchor="middle">FIRST TO ARRIVE</text>
+    <g class="anim-req-a" transform="translate(0, 0)">
+      <rect width="240" height="135" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="1.5" />
+      <rect x="0" y="0" width="240" height="30" rx="10" fill="#065f46" />
+      <text x="14" y="20" fill="#ecfdf5" font-family="monospace" font-size="11" font-weight="700">Request A (Arrives T+0ms)</text>
+      <rect x="180" y="6" width="50" height="18" rx="4" fill="#047857" />
+      <text x="205" y="19" fill="#ffffff" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">1st</text>
+
+      <text x="14" y="52" fill="#94a3b8" font-family="monospace" font-size="10">Bridge: <tspan fill="#38bdf8">phone-bridge</tspan></text>
+      <text x="14" y="72" fill="#94a3b8" font-family="monospace" font-size="10">Hash:   <tspan fill="#6ee7b7">51c858462984...</tspan></text>
+      <text x="14" y="92" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Delivery: Bridge Node Rider</text>
+
+      <rect x="14" y="104" width="212" height="20" rx="4" fill="#047857" />
+      <text x="120" y="118" fill="#ecfdf5" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">ACQUIRES IDEMPOTENCY LOCK</text>
     </g>
 
     <!-- Request B (Duplicate) -->
-    <g class="req-b" transform="translate(0, 110)">
-      <rect width="180" height="90" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
-      <text x="14" y="24" fill="#fbbf24" font-family="monospace" font-size="10" font-weight="700">Request B (T+2ms)</text>
-      <text x="14" y="44" fill="#94a3b8" font-family="monospace" font-size="9">Bridge: stranger-2</text>
-      <text x="14" y="62" fill="#e2e8f0" font-family="monospace" font-size="9">Hash: 51c858462984...</text>
-      <rect x="14" y="68" width="94" height="16" rx="4" fill="#b45309" />
-      <text x="61" y="80" fill="#ffffff" font-family="monospace" font-size="8" font-weight="700" text-anchor="middle">DUPLICATE HASH</text>
+    <g transform="translate(0, 160)">
+      <rect width="240" height="135" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5" />
+      <rect x="0" y="0" width="240" height="30" rx="10" fill="#78350f" />
+      <text x="14" y="20" fill="#fef3c7" font-family="monospace" font-size="11" font-weight="700">Request B (Arrives T+2ms)</text>
+      <rect x="180" y="6" width="50" height="18" rx="4" fill="#b45309" />
+      <text x="205" y="19" fill="#ffffff" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">2nd</text>
+
+      <text x="14" y="52" fill="#94a3b8" font-family="monospace" font-size="10">Bridge: <tspan fill="#38bdf8">stranger-2</tspan></text>
+      <text x="14" y="72" fill="#94a3b8" font-family="monospace" font-size="10">Hash:   <tspan fill="#fbbf24">51c858462984...</tspan></text>
+      <text x="14" y="92" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Identical Ciphertext Hash</text>
+
+      <rect x="14" y="104" width="212" height="20" rx="4" fill="#78350f" />
+      <text x="120" y="118" fill="#fef3c7" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">DUPLICATE DROPPED (0ms)</text>
     </g>
   </g>
 
-  <!-- Middle: Atomic CAS Idempotency Shield -->
-  <g transform="translate(268, 80)">
-    <rect width="210" height="220" rx="14" fill="url(#gateGrad)" stroke="#38bdf8" stroke-width="1.5" />
-    <rect x="0" y="0" width="210" height="34" rx="14" fill="#0f172a" />
-    <text x="105" y="22" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">ATOMIC CAS GATE</text>
+  <!-- CONNECTOR: A to CAS Gate (x=290 to 340) -->
+  <line x1="295" y1="135" x2="335" y2="135" stroke="#10b981" stroke-width="3" class="flow-arrow" />
+  <polygon points="335,130 345,135 335,140" fill="#10b981" />
 
-    <!-- Shield Graphic -->
-    <g transform="translate(75, 45)">
-      <path d="M 30 10 L 55 20 C 55 50 30 65 30 65 C 30 65 5 50 5 20 Z" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5" class="cas-shield" filter="url(#shieldGlow)" />
-      <text x="30" y="42" fill="#fbbf24" font-family="monospace" font-size="14" text-anchor="middle">🛡️</text>
+  <!-- CONNECTOR: B to CAS Gate (x=290 to 340) -->
+  <line x1="295" y1="295" x2="335" y2="295" stroke="#f59e0b" stroke-width="3" class="flow-arrow" />
+  <polygon points="335,290 345,295 335,300" fill="#f59e0b" />
+
+  <!-- COLUMN 2: ATOMIC IN-MEMORY CAS GATE (x=340, y=70, w=260, h=310) -->
+  <g transform="translate(340, 70)">
+    <rect width="260" height="310" rx="14" fill="url(#gateCardGrad)" stroke="#38bdf8" stroke-width="1.5" />
+    
+    <!-- Header -->
+    <rect x="0" y="0" width="260" height="38" rx="14" fill="#0f172a" />
+    <text x="130" y="23" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">SYNCHRONOUS CAS GATE</text>
+
+    <!-- Shield Icon -->
+    <g class="shield-anim" transform="translate(100, 48)">
+      <path d="M 30 6 L 54 16 C 54 44 30 60 30 60 C 30 60 6 44 6 16 Z" fill="#0f172a" stroke="#f59e0b" stroke-width="2.5" />
+      <text x="30" y="38" fill="#fbbf24" font-size="14" text-anchor="middle">🛡️</text>
     </g>
 
-    <text x="105" y="125" fill="#e2e8f0" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">Synchronous Map CAS</text>
+    <!-- Gate Logic Details -->
+    <rect x="14" y="118" width="232" height="70" rx="8" fill="#064e3b" stroke="#10b981" stroke-width="1.2" />
+    <text x="24" y="140" fill="#34d399" font-family="monospace" font-size="10" font-weight="700">✓ claim(hash) === true</text>
+    <text x="24" y="160" fill="#d1fae5" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">First arrival claims lock</text>
+    <text x="24" y="176" fill="#a7f3d0" font-family="monospace" font-size="9">Proceeds to settlement</text>
 
-    <!-- Outcome A: Claim Success -->
-    <rect x="16" y="140" width="178" height="28" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1" />
-    <text x="24" y="158" fill="#34d399" font-family="monospace" font-size="9" font-weight="700">✓ claim(hash) == true</text>
+    <rect x="14" y="196" width="232" height="70" rx="8" fill="#451a03" stroke="#f59e0b" stroke-width="1.2" />
+    <text x="24" y="218" fill="#fbbf24" font-family="monospace" font-size="10" font-weight="700">✕ claim(hash) === false</text>
+    <text x="24" y="238" fill="#fde68a" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10">Already present in memory</text>
+    <text x="24" y="254" fill="#f59e0b" font-family="monospace" font-size="9">→ DUPLICATE_DROPPED (0ms)</text>
 
-    <!-- Outcome B: Duplicate Dropped -->
-    <rect x="16" y="176" width="178" height="28" rx="6" fill="#451a03" stroke="#f59e0b" stroke-width="1" />
-    <text x="24" y="194" fill="#fbbf24" font-family="monospace" font-size="9" font-weight="700">✕ claim(hash) == false</text>
-
-    <text x="105" y="222" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" text-anchor="middle">→ DUPLICATE_DROPPED (0ms)</text>
+    <!-- Bottom subtext -->
+    <rect x="14" y="274" width="232" height="24" rx="4" fill="#0b0f19" />
+    <text x="130" y="290" fill="#94a3b8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" text-anchor="middle">Single-threaded Node.js event loop</text>
   </g>
 
-  <!-- Connective Arrow from CAS to Ledger -->
-  <path d="M 480 155 L 535 155" stroke="#10b981" stroke-width="3" stroke-dasharray="6,4" />
-  <polygon points="535,150 545,155 535,160" fill="#10b981" />
+  <!-- CONNECTOR: CAS to Ledger (x=600 to 650) -->
+  <line x1="605" y1="155" x2="645" y2="155" stroke="#10b981" stroke-width="3" class="flow-arrow" />
+  <polygon points="645,150 655,155 645,160" fill="#10b981" />
 
-  <!-- Right: Atomic Database Settlement Ledger -->
-  <g transform="translate(528, 80)">
-    <rect width="304" height="220" rx="14" fill="url(#settledGrad)" stroke="#10b981" stroke-width="2" />
-    <rect x="0" y="0" width="304" height="34" rx="14" fill="#065f46" />
-    <text x="16" y="22" fill="#ecfdf5" font-family="monospace" font-size="11" font-weight="700">SQLite ACID Settlement Engine</text>
+  <!-- COLUMN 3: SQLITE ACID SETTLEMENT LEDGER (x=650, y=70, w=300, h=310) -->
+  <g transform="translate(650, 70)">
+    <rect width="300" height="310" rx="14" fill="url(#settledCardGrad)" stroke="#10b981" stroke-width="2" />
+    
+    <!-- Header with Stamp -->
+    <rect x="0" y="0" width="300" height="38" rx="14" fill="#065f46" />
+    <text x="16" y="23" fill="#ecfdf5" font-family="monospace" font-size="11" font-weight="700">SQLite ACID Settlement Engine</text>
 
-    <!-- Balance Updates Box -->
-    <rect x="14" y="46" width="276" height="74" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1" />
-    <text x="24" y="68" fill="#8b949e" font-family="monospace" font-size="10">Alice: <tspan fill="#f87171">₹5000.00</tspan> → <tspan fill="#34d399" font-weight="700">₹4750.00</tspan> (-₹250)</text>
-    <text x="24" y="90" fill="#8b949e" font-family="monospace" font-size="10">Bob:   <tspan fill="#94a3b8">₹1000.00</tspan> → <tspan fill="#34d399" font-weight="700">₹1250.00</tspan> (+₹250)</text>
-    <text x="24" y="110" fill="#38bdf8" font-family="monospace" font-size="9">Exact Decimal.js (0 float drift)</text>
-
-    <!-- Ledger Entry -->
-    <rect x="14" y="130" width="276" height="72" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1" />
-    <text x="24" y="150" fill="#94a3b8" font-family="monospace" font-size="9">Nonce:    <tspan fill="#a78bfa">a7b8c9d0 (UNIQUE)</tspan></text>
-    <text x="24" y="168" fill="#94a3b8" font-family="monospace" font-size="9">Hops:     <tspan fill="#e2e8f0">4 hops (SettledAt: 11:28)</tspan></text>
-    <text x="24" y="186" fill="#94a3b8" font-family="monospace" font-size="9">Version:  <tspan fill="#38bdf8">Optimistic Lock v+1</tspan></text>
-
-    <!-- Settled Stamp Graphic -->
-    <g class="settled-stamp" transform="translate(230, 155)">
-      <circle cx="16" cy="16" r="16" fill="#10b981" filter="url(#greenGlow)" />
-      <path d="M 10 16 L 14 20 L 22 12" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+    <!-- Standalone SETTLED Stamp in Header (Zero Overlap with body text) -->
+    <g class="stamp-anim" transform="translate(230, 8)">
+      <rect width="60" height="22" rx="4" fill="#10b981" stroke="#34d399" stroke-width="1" />
+      <text x="30" y="15" fill="#ffffff" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">SETTLED</text>
     </g>
+
+    <!-- Sub-Box 1: Balance Updates -->
+    <rect x="14" y="48" width="272" height="105" rx="8" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="24" y="70" fill="#e2e8f0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">ATOMIC BALANCE TRANSFER</text>
+    <line x1="24" y1="78" x2="276" y2="78" stroke="#30363d" stroke-width="1" />
+
+    <text x="24" y="100" fill="#94a3b8" font-family="monospace" font-size="10">Alice: <tspan fill="#f87171">₹5000.00</tspan> → <tspan fill="#34d399" font-weight="700">₹4750.00</tspan> (-₹250)</text>
+    <text x="24" y="124" fill="#94a3b8" font-family="monospace" font-size="10">Bob:   <tspan fill="#94a3b8">₹1000.00</tspan> → <tspan fill="#34d399" font-weight="700">₹1250.00</tspan> (+₹250)</text>
+    <text x="24" y="142" fill="#38bdf8" font-family="monospace" font-size="9">Exact Decimal.js (0 float drift)</text>
+
+    <!-- Sub-Box 2: Ledger Verification Invariants -->
+    <rect x="14" y="162" width="272" height="96" rx="8" fill="#0b0f19" stroke="#30363d" stroke-width="1" />
+    <text x="24" y="184" fill="#e2e8f0" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600">LEDGER AUDIT RECORD</text>
+    <line x1="24" y1="192" x2="276" y2="192" stroke="#30363d" stroke-width="1" />
+
+    <text x="24" y="212" fill="#94a3b8" font-family="monospace" font-size="10">Nonce:    <tspan fill="#a78bfa">a7b8c9d0 (UNIQUE)</tspan></text>
+    <text x="24" y="230" fill="#94a3b8" font-family="monospace" font-size="10">Hops:     <tspan fill="#e2e8f0">4 hops (Bridge: phone-bridge)</tspan></text>
+    <text x="24" y="248" fill="#94a3b8" font-family="monospace" font-size="10">Locking:  <tspan fill="#38bdf8">Optimistic Lock v+1</tspan></text>
+
+    <!-- Bottom note -->
+    <rect x="14" y="268" width="272" height="28" rx="6" fill="#065f46" />
+    <text x="150" y="286" fill="#ecfdf5" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">TRANSACTION PERMANENTLY COMMITTED</text>
   </g>
 </svg>
