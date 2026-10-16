@@ -137,6 +137,15 @@
     </div>
 
     <div class="card" style="margin-top: 16px">
+        <h2>🎁 Bridge Node Bounties (₹0.50 Protocol Micro-Rewards)</h2>
+        <table id="rewards-table">
+            <thead><tr><th>Bridge Node</th><th>Bounty Earned</th><th>Packets Relayed</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <p class="small">First bridge node to deliver and win the CAS Idempotency Gate earns ₹0.50 per settled transaction.</p>
+    </div>
+
+    <div class="card" style="margin-top: 16px">
         <h2>📜 Transaction Ledger</h2>
         <table id="tx-table">
             <thead><tr>
@@ -194,6 +203,27 @@ async function refresh() {
             <td class="small">${new Date(t.settledAt).toLocaleTimeString()}</td>
         </tr>
     `).join('');
+
+    // Bridge Rewards
+    try {
+        const rew = await fetch('/api/bridges/rewards').then(r => r.json());
+        const rewardsTbody = document.querySelector('#rewards-table tbody');
+        if (rewardsTbody) {
+            if (!rew.bridges || rew.bridges.length === 0) {
+                rewardsTbody.innerHTML = '<tr><td colspan="3" class="small">No bridge bounties awarded yet. Run a flush!</td></tr>';
+            } else {
+                rewardsTbody.innerHTML = rew.bridges.map(b => `
+                    <tr>
+                        <td><strong>${b.bridge_id}</strong></td>
+                        <td class="balance">₹${parseFloat(b.total_reward_inr).toFixed(2)}</td>
+                        <td>${b.packets_relayed} packet(s)</td>
+                    </tr>
+                `).join('');
+            }
+        }
+    } catch (e) {
+        console.error('Failed to load bridge rewards', e);
+    }
 }
 
 async function sendPacket() {

@@ -42,8 +42,7 @@ export class MeshSimulatorService {
   }
 
   /**
-   * One round of Bluetooth gossip. Every device shares held packets with every
-   * other device, decrementing TTL per hop.
+   * One round of Bluetooth gossip with Upgrade 1 Deduplication & Kill-Switch.
    */
   public gossipOnce(): GossipResponse {
     let transfers = 0;
@@ -66,9 +65,6 @@ export class MeshSimulatorService {
           if (dst.deviceId === src.deviceId) {
             continue;
           }
-          if (dst.holds(pkt.packetId)) {
-            continue;
-          }
 
           const copy: MeshPacket = {
             packetId: pkt.packetId,
@@ -77,8 +73,10 @@ export class MeshSimulatorService {
             ciphertext: pkt.ciphertext,
           };
 
-          dst.hold(copy);
-          transfers++;
+          const accepted = dst.receivePacket(copy);
+          if (accepted) {
+            transfers++;
+          }
         }
       }
     }
@@ -88,6 +86,23 @@ export class MeshSimulatorService {
       transfers,
       deviceCounts: this.snapshotMap(),
     };
+  }
+
+  /**
+   * Upgrade 1 Reverse ACK: Broadcasts settlement receipt across all mesh nodes,
+   * purging settled packets from all offline phone buffers.
+   */
+  public propagateSettlementAck(settledPacketHash: string, packetId?: string): void {
+    for (const d of this.devices.values()) {
+      d.receiveSettlementAck(settledPacketHash);
+      if (packetId) {
+        d.receiveSettlementAck(packetId);
+      }
+    }
+    console.info(
+      { settledPacketHashPreview: settledPacketHash.substring(0, 12) },
+      'Reverse settlement ACK broadcasted across mesh — buffers purged'
+    );
   }
 
   public snapshotMap(): Record<string, number> {

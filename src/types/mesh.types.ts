@@ -52,6 +52,13 @@ export interface IngestResult {
   packetHash: string;
   reason: string | null;
   transactionId: number | null;
+  bridgeRewarded?: string | null;
+  bountyEarned?: string | null;
+  ackReceipt?: {
+    type: string;
+    packetHash: string;
+    settledAt: number;
+  } | null;
 }
 
 // -----------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 import { Request, Response, Router } from 'express';
+import { getDatabase } from '../config/database.js';
 import { serverKeyHolder } from '../crypto/serverKeyHolder.js';
 import { accountRepository } from '../repositories/account.repo.js';
 import { transactionRepository } from '../repositories/transaction.repo.js';
@@ -143,4 +144,13 @@ apiRouter.get('/accounts', (_req: Request, res: Response): void => {
 apiRouter.get('/transactions', (_req: Request, res: Response): void => {
   const transactions = transactionRepository.findTop20ByOrderByIdDesc();
   res.json(transactions);
+});
+
+// -----------------------------------------------------------------------------
+// 10. Upgrade 2: Bridge Node Rewards Listing
+// -----------------------------------------------------------------------------
+apiRouter.get('/bridges/rewards', (_req: Request, res: Response): void => {
+  const db = getDatabase();
+  const rewards = db.prepare('SELECT * FROM bridge_rewards ORDER BY packets_relayed DESC').all();
+  res.json({ bridges: rewards });
 });

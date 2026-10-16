@@ -8,6 +8,7 @@ target/
 # Logs & temp
 *.log
 .DS_Store
+*.db*
 
 # IDE configs
 .idea/

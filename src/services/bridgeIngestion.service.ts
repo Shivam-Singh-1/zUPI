@@ -2,6 +2,7 @@ import { env } from '../config/env.js';
 import { HybridCryptoService, hybridCryptoService } from '../crypto/hybridCrypto.service.js';
 import { IngestResult, MeshPacket, PaymentInstruction } from '../types/mesh.types.js';
 import { IdempotencyService, idempotencyService } from './idempotency.service.js';
+import { meshSimulatorService, MeshSimulatorService } from './meshSimulator.service.js';
 import { SettlementService, settlementService } from './settlement.service.js';
 
 export class BridgeIngestionService {
@@ -9,6 +10,7 @@ export class BridgeIngestionService {
     private readonly crypto: HybridCryptoService = hybridCryptoService,
     private readonly idempotency: IdempotencyService = idempotencyService,
     private readonly settlement: SettlementService = settlementService,
+    private readonly meshSimulator: MeshSimulatorService = meshSimulatorService,
     private readonly maxAgeSeconds: number = env.PACKET_MAX_AGE_SECONDS,
     private readonly clockSkewToleranceSeconds: number = env.CLOCK_SKEW_TOLERANCE_SECONDS
   ) {}
@@ -17,8 +19,8 @@ export class BridgeIngestionService {
     try {
       const packetHash = this.crypto.hashCiphertext(packet.ciphertext);
 
-      // 1. Idempotency Gate (Synchronous atomic CAS)
-      if (!this.idempotency.claim(packetHash)) {
+      // 1. Two-Tier Idempotency Gate (Fast In-Memory + SQLite WAL Persistence)
+      if (!this.idempotency.claim(packetHash, bridgeNodeId)) {
         console.info(
           { packetHashPreview: packetHash.substring(0, 12), bridgeNodeId },
           'DUPLICATE packet dropped via idempotency cache'
@@ -28,6 +30,9 @@ export class BridgeIngestionService {
           packetHash,
           reason: 'duplicate_packet_hash',
           transactionId: null,
+          bridgeRewarded: null,
+          bountyEarned: null,
+          ackReceipt: null,
         };
       }
 
@@ -46,6 +51,9 @@ export class BridgeIngestionService {
           packetHash,
           reason: 'decryption_failed',
           transactionId: null,
+          bridgeRewarded: null,
+          bountyEarned: null,
+          ackReceipt: null,
         };
       }
 
@@ -61,6 +69,9 @@ export class BridgeIngestionService {
           packetHash,
           reason: 'stale_packet',
           transactionId: null,
+          bridgeRewarded: null,
+          bountyEarned: null,
+          ackReceipt: null,
         };
       }
 
@@ -74,17 +85,31 @@ export class BridgeIngestionService {
           packetHash,
           reason: 'future_dated',
           transactionId: null,
+          bridgeRewarded: null,
+          bountyEarned: null,
+          ackReceipt: null,
         };
       }
 
-      // 4. Ledger Settlement
+      // 4. Ledger Settlement & Bridge Bounty Award
       try {
-        const tx = this.settlement.settle(instruction, packetHash, bridgeNodeId, hopCount);
+        const result = this.settlement.settle(instruction, packetHash, bridgeNodeId, hopCount);
+
+        // Upgrade 1: Broadcast reverse ACK to clear mesh buffers across all nodes
+        this.meshSimulator.propagateSettlementAck(packetHash, packet.packetId);
+
         return {
           outcome: 'SETTLED',
           packetHash,
           reason: null,
-          transactionId: tx.id ?? null,
+          transactionId: result.transaction.id ?? null,
+          bridgeRewarded: result.bridgeRewarded,
+          bountyEarned: result.bountyEarned,
+          ackReceipt: {
+            type: 'SETTLEMENT_ACK',
+            packetHash,
+            settledAt: Date.now(),
+          },
         };
       } catch (err) {
         if (err instanceof Error && err.message === 'DUPLICATE_PAYMENT_NONCE') {
@@ -97,6 +122,9 @@ export class BridgeIngestionService {
             packetHash,
             reason: 'duplicate_payment_nonce',
             transactionId: null,
+            bridgeRewarded: null,
+            bountyEarned: null,
+            ackReceipt: null,
           };
         }
         throw err;
@@ -109,6 +137,9 @@ export class BridgeIngestionService {
         packetHash: '?',
         reason: `internal_error: ${errorMsg}`,
         transactionId: null,
+        bridgeRewarded: null,
+        bountyEarned: null,
+        ackReceipt: null,
       };
     }
   }

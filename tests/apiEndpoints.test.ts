@@ -135,4 +135,26 @@ describe('API Endpoints & Dashboard Integration', () => {
     expect(dupRes.status).toBe(200);
     expect(dupRes.body.outcome).toBe('DUPLICATE_DROPPED');
   });
+
+  it('GET /api/bridges/rewards returns list of earned bridge rewards', async () => {
+    // Settle a packet with bridge-direct
+    const packet = demoService.createPacket('alice@demo', 'bob@demo', '50.00', '1234', 5);
+    await request(app)
+      .post('/api/bridge/ingest')
+      .set('X-Bridge-Node-Id', 'bridge-bounty-node')
+      .send(packet);
+
+    const res = await request(app).get('/api/bridges/rewards');
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('bridges');
+    expect(Array.isArray(res.body.bridges)).toBe(true);
+
+    const bountyNode = res.body.bridges.find(
+      (b: { bridge_id: string }) => b.bridge_id === 'bridge-bounty-node'
+    );
+    expect(bountyNode).toBeDefined();
+    expect(bountyNode.total_reward_inr).toBe('0.50');
+    expect(bountyNode.packets_relayed).toBe(1);
+  });
 });
+

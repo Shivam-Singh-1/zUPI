@@ -5,7 +5,15 @@ import { PaymentInstruction } from '../types/mesh.types.js';
 import { AccountRepository, accountRepository } from '../repositories/account.repo.js';
 import { TransactionRepository, transactionRepository } from '../repositories/transaction.repo.js';
 
+export interface SettlementExecutionResult {
+  transaction: Transaction;
+  bridgeRewarded: string;
+  bountyEarned: string;
+}
+
 export class SettlementService {
+  private readonly bridgeBounty = new Decimal('0.50'); // ₹0.50 Bounty per first successful delivery
+
   constructor(
     private readonly accounts: AccountRepository = accountRepository,
     private readonly transactions: TransactionRepository = transactionRepository
@@ -13,17 +21,18 @@ export class SettlementService {
 
   /**
    * Executes atomic balance transfer within an immediate SQLite transaction.
-   * Enforces nonce uniqueness and optimistic version locking.
+   * Enforces nonce uniqueness, optimistic version locking, and awards the
+   * ₹0.50 Bridge Node Micro-Bounty.
    */
   public settle(
     instruction: PaymentInstruction,
     packetHash: string,
     bridgeNodeId: string,
     hopCount: number
-  ): Transaction {
+  ): SettlementExecutionResult {
     const db = getDatabase();
 
-    const executeSettlement = db.transaction((): Transaction => {
+    const executeSettlement = db.transaction((): SettlementExecutionResult => {
       // 1. Prevent reuse of a previously processed payment nonce
       if (this.transactions.existsByPaymentNonce(instruction.nonce)) {
         throw new Error('DUPLICATE_PAYMENT_NONCE');
@@ -53,7 +62,12 @@ export class SettlementService {
           { senderVpa: sender.vpa, balance: sender.balance, amount: instruction.amount },
           'Insufficient balance — recording REJECTED transaction'
         );
-        return this.recordRejected(instruction, packetHash, bridgeNodeId, hopCount);
+        const rejectedTx = this.recordRejected(instruction, packetHash, bridgeNodeId, hopCount);
+        return {
+          transaction: rejectedTx,
+          bridgeRewarded: bridgeNodeId,
+          bountyEarned: '₹0.00',
+        };
       }
 
       // 2. Perform exact decimal balance arithmetic
@@ -64,7 +78,26 @@ export class SettlementService {
       this.accounts.save(sender);
       this.accounts.save(receiver);
 
-      // 4. Record settled ledger entry
+      // 4. Upgrade 2: Credit Bridge Node ₹0.50 Bounty from Protocol Treasury
+      const existingBridge = db
+        .prepare('SELECT total_reward_inr, packets_relayed FROM bridge_rewards WHERE bridge_id = ?')
+        .get(bridgeNodeId) as { total_reward_inr: string; packets_relayed: number } | undefined;
+
+      if (!existingBridge) {
+        db.prepare(`
+          INSERT INTO bridge_rewards (bridge_id, total_reward_inr, packets_relayed, updated_at)
+          VALUES (?, ?, 1, ?)
+        `).run(bridgeNodeId, this.bridgeBounty.toFixed(2), Date.now());
+      } else {
+        const newReward = new Decimal(existingBridge.total_reward_inr).plus(this.bridgeBounty);
+        db.prepare(`
+          UPDATE bridge_rewards
+          SET total_reward_inr = ?, packets_relayed = packets_relayed + 1, updated_at = ?
+          WHERE bridge_id = ?
+        `).run(newReward.toFixed(2), Date.now(), bridgeNodeId);
+      }
+
+      // 5. Record settled ledger entry
       const settledTx: Transaction = {
         packetHash,
         paymentNonce: instruction.nonce,
@@ -87,12 +120,17 @@ export class SettlementService {
           receiverVpa: receiver.vpa,
           packetHashPreview: packetHash.substring(0, 12),
           bridgeNodeId,
+          bountyEarned: `₹${this.bridgeBounty.toFixed(2)}`,
           hopCount,
         },
-        'Transaction SETTLED successfully'
+        'Transaction SETTLED and Bridge Micro-Reward Credited'
       );
 
-      return savedTx;
+      return {
+        transaction: savedTx,
+        bridgeRewarded: bridgeNodeId,
+        bountyEarned: `₹${this.bridgeBounty.toFixed(2)}`,
+      };
     });
 
     return executeSettlement();

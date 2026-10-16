@@ -111,6 +111,7 @@ Open [http://localhost:8080](http://localhost:8080) to interact with the Live De
 | `tamperedCiphertextIsRejected` | Modifies bits inside encrypted ciphertext. | **Passed** (`INVALID` with `decryption_failed`). |
 | `encryptDecryptRoundTrip` | Roundtrip encryption/decryption of `PaymentInstruction`. | **Passed** (Exact field and payload integrity). |
 | `sameNonceWithDifferentCiphertextCannotSettleTwice` | Re-encryption with fresh AES key but identical nonce. | **Passed** (Second attempt rejected via database unique constraint). |
+| `firstBridgeWinsBountyAndBroadcastsAckToClearMesh` | 3 concurrent bridge uploads: 1st wins ₹0.50 bounty; reverse ACK clears mesh buffers. | **Passed** (Winner credited ₹0.50, losers ₹0.00, mesh `packetCount === 0`). |
 
 ---
 
@@ -126,3 +127,4 @@ Open [http://localhost:8080](http://localhost:8080) to interact with the Live De
 - `POST /api/bridge/ingest` — Ingestion endpoint used by bridge nodes
 - `GET /api/accounts` — Lists all seeded account balances
 - `GET /api/transactions` — Returns last 20 settled/rejected transactions
+- `GET /api/bridges/rewards` — Returns protocol micro-bounties earned by bridge nodes
