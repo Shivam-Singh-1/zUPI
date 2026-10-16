@@ -70,60 +70,92 @@ It enables offline UPI payments in scenarios where users have **zero cellular re
 
 ---
 
-## 🎬 End-to-End Lifecycle & Functioning (Step-by-Step)
+## 🎬 Real-Life Scenario: Step-by-Step Data Flow & Functioning
 
-### Step 1: Offline Payment Composition & Hybrid Encryption
-Alice is in an underground basement food court with **0 bars of reception**. She enters Bob’s VPA (`bob@demo`), the amount (₹250.00), and her UPI PIN.
-
-![Step 1: Offline Encryption](docs/assets/step1-offline-encryption.svg)
-
-1. **Ephemeral Session Key:** Alice's device generates a cryptographically secure 256-bit AES key.
-2. **Authenticated Symmetric Encryption:** The payment instruction is encrypted using **AES-256-GCM**, producing the ciphertext and a 16-byte authentication tag that detects any transit tampering.
-3. **Asymmetric Key Encapsulation:** The 32-byte AES key is encrypted using the Bank Server's cached **RSA-2048 Public Key** with OAEP (SHA-256) padding.
-4. **Wire Format Construction:** The packet is packed into a compact wire envelope:
-   `[256-byte RSA Key | 12-byte IV | Variable Ciphertext | 16-byte GCM Tag]` and assigned `TTL = 5`.
+### 📌 Scenario Setup
+> **Real-World Context:**
+> Maan lijiye **Alice** ek underground food court mein hai jahan **0 bars of mobile network (zero internet)** hai. Use **Bob (`bob@demo`)** ko **₹250.00** pay karne hain.
 
 ---
 
-### Step 2: Peer-to-Peer Bluetooth Mesh Gossip
-Because Alice has no internet, her device advertises the packet over simulated Bluetooth Low Energy (BLE) / Wi-Fi Direct.
+### Step 1: Offline Payment Composition & Hybrid Encryption (Client-Side)
+
+Kyunki internet nahi hai, Alice ka phone seedhe bank server tak request nahi bhej sakta. Isliye, uska phone local device par hi transaction ko securely encrypt karta hai taaki koi beech mein tamper na kar sake.
+
+> 💡 **Hinglish Explanation:**
+> Alice jaise hi UPI PIN dalti hai, app ek temporary (ephemeral) session key banata hai. Is session key se payment details ko encrypt kiya jata hai taaki koi beech ke raste mein data chura na sake. Phir is session key ko bank ke RSA public key se lock kar diya jata hai.
+
+![Step 1: Offline Encryption](docs/assets/step1-offline-encryption.svg)
+
+#### 🛠 Libraries & Functions Used:
+* **Node.js `crypto` module (ya browser Web Crypto APIs):**
+  * `crypto.randomBytes(32)`: 256-bit random AES session key generate karne ke liye.
+  * `crypto.createCipheriv('aes-256-gcm', key, iv)`: **AES-256-GCM** authenticated symmetric encryption perform karne ke liye (16-byte GCM authentication tag ke sath).
+  * `crypto.publicEncrypt({ key: bankPublicKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING }, aesKey)`: **RSA-2048 OAEP (SHA-256)** encryption use karke AES key ko bank ke public key se securely wrap/lock karne ke liye.
+* **Wire Format Assembly:**
+  * `Buffer.concat([encryptedKey, iv, ciphertext, authTag])` — Encrypted binary envelope tayar hota hai aur isse initial `TTL = 5` assign kiya jata hai.
+
+---
+
+### Step 2: Peer-to-Peer Bluetooth Mesh Gossip (P2P Transit)
+
+Alice ke phone ke paas internet nahi hai, toh uska phone is encrypted packet ko Bluetooth Low Energy (BLE) / Wi-Fi Direct waves ke through aas-paas ke strangers ke phones par broadcast (gossip) karta hai.
+
+> 💡 **Hinglish Explanation:**
+> Packet ek phone se doosre phone par hop karta hai (jaise `Stranger 1` ➔ `Stranger 2` ➔ `Stranger 3`). Yeh devices packet ke andar ki details nahi padh sakte kyunki data strictly encrypted hai. Loop banne se rokne ke liye har phone ek `seenHashes` filter rakhta hai.
 
 ![Step 2: Mesh Gossip](docs/assets/step2-mesh-gossip.svg)
 
-1. **Zero-Trust Relays:** Relaying devices (`stranger-1`, `stranger-2`, `stranger-3`) only see opaque ciphertext. They have zero access to the sender, receiver, amount, or PIN.
-2. **Seen-Packet Deduplication:** Each phone checks `seenHashes.has(hash)`. If seen, it ignores the advertisement, preventing battery-draining loops.
-3. **Hop Limit:** Each transmission decrements the TTL (`5 → 4 → 3 → 2 → 1`). Packets reaching `TTL = 0` are discarded.
-4. **Reverse ACK Readiness:** Phones hold the encrypted packet in volatile memory while awaiting the reverse settlement ACK.
+#### 🛠 Libraries & Functions Used:
+* **TypeScript native `Set<string>` (`seenHashes`):**
+  * Har device local memory mein `seenHashes.has(packetHash)` check karti hai. Agar packet hash pehle se dekha gaya hai, toh turant drop kar diya jata hai taaki battery-draining infinite ping-pong loops avoid kiye ja sakein.
+* **TTL (Time-To-Live) Counter:**
+  * Packet header mein `TTL = 5` hota hai jo har hop par decrement hota jata hai (`5 → 4 → 3 → 2 → 1`). Jab `TTL = 0` ho jata hai, packet drop ho jata hai.
+* **Reverse Settlement ACK Buffer Purge:**
+  * Jab bank se settlement confirm hoti hai, ACK reverse travel karta hai aur `buffer.delete(packetHash)` call karke phone RAM storage ko permanently clean kar deta hai.
 
 ---
 
 ### Step 3: Opportunistic 4G Bridge Upload & Micro-Bounty Incentive
-A delivery rider (`phone-bridge`) carrying the packet ascends an escalator and enters an area with 4G/5G mobile connectivity.
+
+Ek delivery rider (`phone-bridge`) jo in packets ko carry kar raha tha, escalator se upar aata hai aur 4G/5G mobile network zone mein pahunch jata hai.
+
+> 💡 **Hinglish Explanation:**
+> Jaise hi bridge node ko internet milta hai, woh apne buffer mein rakhe saare encrypted packets ko bank ke server par POST request ke zariye bhej deta hai. Iska fayda uthane ke liye system bridge node ko ₹0.50 ka protocol micro-bounty deta hai taaki log offline data carry karne ke liye motivated rahein.
 
 ![Step 3: Bridge Upload](docs/assets/step3-bridge-upload.svg)
 
-1. **Opportunistic Ingestion:** The bridge device flushes its buffer by dispatching an HTTPS `POST /api/bridge/ingest` with `X-Bridge-Node-Id: phone-bridge`.
-2. **The Duplicate Storm:** If another stranger (`stranger-2`) also catches 4G reception 2 milliseconds later, both phones submit parallel requests containing the identical ciphertext.
-3. **Economic Incentive:** The winning bridge node is rewarded with a **₹0.50 protocol bounty**, turning every mobile user into an incentivized offline payment carrier. The duplicate bridge receives a friendly `DUPLICATE_DROPPED` response.
+#### 🛠 Libraries & Functions Used:
+* **Express.js (v4.19):**
+  * **Endpoint:** `POST /api/bridge/ingest`
+  * **Headers parsing:** `req.headers['x-bridge-node-id']` se identify kiya jata hai ki kis bridge node ne packet deliver kiya hai taaki use micro-bounty reward mil sake.
+  * `req.headers['x-hop-count']`: Audit logs ke liye hop count track kiya jata hai.
+* **Race Condition & Storm Protection:**
+  * Agar do bridge nodes concurrent packets bhejte hain, pehle aane wale ko ₹0.50 milta hai; concurrent duplicate ko HTTP 200 `DUPLICATE_DROPPED` milta hai (`bountyEarned: "₹0.00"`).
 
 ---
 
-### Step 4: Two-Tier CAS Idempotency Gate & Deterministic Settlement
-The banking backend processes incoming requests through an atomic verification pipeline, guaranteeing zero double-spending.
+### Step 4: Two-Tier CAS Idempotency & ACID Settlement (Bank Gateway)
+
+Server par request aane ke baad banking backend ye ensure karta hai ki double-spending na ho aur transaction bilkul safe ho.
+
+> 💡 **Hinglish Explanation:**
+> Server sabse pehle check karta hai ki kya yeh packet pehle process ho chuka hai (idempotency check). Phir server apne RSA private key se decryption karta hai, aur `Decimal.js` ka use karke exact mathematical precision ke sath Alice ke account se paise kaat kar Bob ke account mein bhej deta hai aur bridge node ko reward credit karta hai.
 
 ![Step 4: Idempotency & Settlement](docs/assets/step4-idempotency-settlement.svg)
 
-1. **Two-Tier Idempotency Gate:**
-   * **Tier 1 (RAM):** The server checks an atomic hash set. If the hash is already active or settled, it rejects the duplicate in **0ms**.
-   * **Tier 2 (SQLite WAL):** The hash is inserted into `processed_packets`. If the server crashed and rebooted moments prior, the database unique constraint stops duplicates from ever re-executing.
-2. **Hybrid Decryption:** The server uses its RSA-2048 private key to recover the AES session key, then verifies the GCM auth tag and decrypts the instruction.
-3. **Freshness & Nonce Verification:** Rejects any packet signed more than 24 hours ago, and verifies that the client-generated UUID `paymentNonce` has never been used.
-4. **Atomic 3-Way ACID Transfer:**
-   * Alice's account is debited ₹250.00.
-   * Bob's account is credited ₹250.00.
-   * `phone-bridge` is credited the **₹0.50 Protocol Bounty** in `bridge_rewards`.
-   * Executed with exact-precision `Decimal.js` arithmetic (eliminating floating-point drift) and optimistic concurrency locks.
-5. **Reverse ACK Emission:** Emits `{ packetHash, status: "SETTLED" }` back to the bridge node, propagating across the mesh to purge all relay device buffers.
+#### 🛠 Libraries & Functions Used:
+* **SQLite (with WAL Mode - Write-Ahead Logging):**
+  * `PRAGMA journal_mode = WAL;` — High concurrency aur fast reads/writes ke liye.
+  * `PRAGMA synchronous = NORMAL;` & `PRAGMA busy_timeout = 5000;`
+  * `processed_packets` table jisme `packet_hash TEXT PRIMARY KEY` hota hai, taaki server reboot ya crash ke baad bhi same packet dobara process na ho sake.
+* **`decimal.js` library:**
+  * Floating-point rounding errors (jaise JavaScript ke standard math bugs `0.1 + 0.2 !== 0.3`) se bachne ke liye exact decimal calculations (`new Decimal(aliceBalance).minus(250)`) perform karne ke liye.
+* **Node.js `crypto` decryption:**
+  * `crypto.privateDecrypt({ key: serverPrivateKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING }, encKey)`: Bank private key se AES session key ko unlock karne ke liye.
+  * `crypto.createDecipheriv('aes-256-gcm', aesKey, iv).setAuthTag(authTag)`: Authenticated payload recovery aur tamper verification ke liye.
+* **`bridge_rewards` Table:**
+  * Winning bridge node ko `INSERT INTO bridge_rewards ...` ke zariye ₹0.50 add kiya jata hai, jo `GET /api/bridges/rewards` par queryable hota hai.
 
 ---
 
