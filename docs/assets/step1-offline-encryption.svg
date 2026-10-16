@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1c2128" />
+      <stop offset="100%" stop-color="#11151c" />
+    </linearGradient>
+    <linearGradient id="cyanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="goldGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <style>
+      @keyframes floatPulse {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-4px); }
+      }
+      @keyframes lockSnap {
+        0%, 20% { transform: scale(0.9) rotate(-10deg); opacity: 0.3; }
+        40%, 80% { transform: scale(1.05) rotate(0deg); opacity: 1; }
+        90%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+      }
+      @keyframes beamFlow {
+        0% { stroke-dashoffset: 160; opacity: 0.2; }
+        50% { opacity: 1; }
+        100% { stroke-dashoffset: 0; opacity: 0.3; }
+      }
+      @keyframes cipherScroll {
+        0% { transform: translateY(0px); opacity: 0.7; }
+        50% { transform: translateY(-12px); opacity: 1; }
+        100% { transform: translateY(0px); opacity: 0.7; }
+      }
+      @keyframes badgePulse {
+        0%, 100% { opacity: 0.8; }
+        50% { opacity: 1; filter: drop-shadow(0 0 6px rgba(248,113,113,0.6)); }
+      }
+      .phone-card { animation: floatPulse 4s ease-in-out infinite; }
+      .lock-icon { transform-origin: 440px 170px; animation: lockSnap 4s ease-in-out infinite; }
+      .data-stream { stroke-dasharray: 12, 6; animation: beamFlow 2s linear infinite; }
+      .cipher-text { animation: cipherScroll 3s ease-in-out infinite; }
+      .offline-badge { animation: badgePulse 2s ease-in-out infinite; }
+    </style>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="880" height="340" rx="16" fill="url(#bgGrad)" stroke="#30363d" stroke-width="1.5" />
+
+  <!-- Section Header -->
+  <g transform="translate(32, 34)">
+    <circle cx="10" cy="10" r="10" fill="#38bdf8" fill-opacity="0.2" />
+    <text x="10" y="15" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">1</text>
+    <text x="32" y="15" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" letter-spacing="0.3">STEP 1: OFFLINE PAYMENT COMPOSITION &amp; HYBRID ENCRYPTION</text>
+    <rect x="730" y="0" width="86" height="22" rx="11" fill="#ef4444" fill-opacity="0.18" stroke="#ef4444" stroke-width="1" class="offline-badge" />
+    <text x="773" y="15" fill="#f87171" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" text-anchor="middle">🚫 0 BARS (OFFLINE)</text>
+  </g>
+
+  <!-- Stage Left: Sender Device (Alice) -->
+  <g class="phone-card" transform="translate(48, 80)">
+    <rect width="240" height="220" rx="14" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="0" y="0" width="240" height="36" rx="14" fill="#1f2937" fill-opacity="0.5" />
+    <circle cx="20" cy="18" r="4" fill="#ef4444" />
+    <text x="32" y="22" fill="#e6edf3" font-family="monospace" font-size="12" font-weight="600">phone-alice</text>
+
+    <!-- Payment Instruction Box -->
+    <rect x="16" y="48" width="208" height="152" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1" />
+    <text x="28" y="70" fill="#8b949e" font-family="monospace" font-size="10">From:   <tspan fill="#58a6ff">alice@demo</tspan></text>
+    <text x="28" y="90" fill="#8b949e" font-family="monospace" font-size="10">To:     <tspan fill="#58a6ff">bob@demo</tspan></text>
+    <text x="28" y="112" fill="#8b949e" font-family="monospace" font-size="10">Amount: <tspan fill="#3fb950" font-weight="700">₹250.00</tspan></text>
+    <text x="28" y="134" fill="#8b949e" font-family="monospace" font-size="10">PIN:    <tspan fill="#e6edf3">•••• (Hash: 03ac67...)</tspan></text>
+    <text x="28" y="156" fill="#8b949e" font-family="monospace" font-size="10">Nonce:  <tspan fill="#a78bfa">a7b8c9d0-1234...</tspan></text>
+    <text x="28" y="178" fill="#8b949e" font-family="monospace" font-size="10">Sign:   <tspan fill="#e6edf3">offline (now)</tspan></text>
+  </g>
+
+  <!-- Connective Beam Left to Center -->
+  <path d="M 292 190 L 375 190" stroke="#38bdf8" stroke-width="2.5" class="data-stream" />
+  <polygon points="375,186 385,190 375,194" fill="#38bdf8" />
+
+  <!-- Stage Center: Hybrid Encryption Engine -->
+  <g transform="translate(365, 80)">
+    <rect width="180" height="220" rx="14" fill="url(#cardGrad)" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="0" y="0" width="180" height="36" rx="14" fill="#78350f" fill-opacity="0.35" />
+    <text x="90" y="23" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">HYBRID VAULT</text>
+
+    <!-- Padlock Graphic -->
+    <g class="lock-icon" transform="translate(0, 0)">
+      <path d="M 75 80 L 75 66 C 75 50 105 50 105 66 L 105 80 Z" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" />
+      <rect x="66" y="80" width="48" height="38" rx="8" fill="url(#amberGrad)" filter="url(#goldGlow)" />
+      <circle cx="90" cy="96" r="4" fill="#000" />
+      <path d="M 90 98 L 90 106" stroke="#000" stroke-width="2" stroke-linecap="round" />
+    </g>
+
+    <text x="90" y="148" fill="#fbbf24" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">AES-256-GCM</text>
+    <text x="90" y="166" fill="#9ca3af" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" text-anchor="middle">Encrypts JSON Payload</text>
+
+    <text x="90" y="194" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="700" text-anchor="middle">+ RSA-2048 OAEP</text>
+    <text x="90" y="212" fill="#9ca3af" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9" text-anchor="middle">Encrypts AES Key</text>
+
+    <text x="90" y="238" fill="#34d399" font-family="monospace" font-size="9" font-weight="600" text-anchor="middle">🔒 Tamper-Proof 16B Tag</text>
+  </g>
+
+  <!-- Connective Beam Center to Right -->
+  <path d="M 548 190 L 620 190" stroke="#818cf8" stroke-width="2.5" class="data-stream" />
+  <polygon points="620,186 630,190 620,194" fill="#818cf8" />
+
+  <!-- Stage Right: MeshPacket Wire Format -->
+  <g class="phone-card" transform="translate(610, 80)">
+    <rect width="220" height="220" rx="14" fill="url(#cardGrad)" stroke="#818cf8" stroke-width="1.5" />
+    <rect x="0" y="0" width="220" height="36" rx="14" fill="#312e81" fill-opacity="0.4" />
+    <text x="24" y="22" fill="#c7d2fe" font-family="monospace" font-size="12" font-weight="600">MeshPacket</text>
+    <rect x="156" y="8" width="50" height="20" rx="4" fill="#10b981" fill-opacity="0.2" stroke="#10b981" stroke-width="1" />
+    <text x="181" y="22" fill="#34d399" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">TTL: 5</text>
+
+    <!-- Ciphertext Binary Blocks -->
+    <rect x="16" y="48" width="188" height="152" rx="8" fill="#0d1117" stroke="#30363d" stroke-width="1" />
+    <text x="26" y="68" fill="#6366f1" font-family="monospace" font-size="10" font-weight="700">[256B Encrypted AES Key]</text>
+    <text x="26" y="88" fill="#38bdf8" font-family="monospace" font-size="10" font-weight="700">[12B GCM IV]</text>
+
+    <g class="cipher-text">
+      <text x="26" y="112" fill="#6ee7b7" font-family="monospace" font-size="9">C4F9 82A1 0B2E 99DF</text>
+      <text x="26" y="128" fill="#6ee7b7" font-family="monospace" font-size="9">7B31 5C0E AA28 11FE</text>
+      <text x="26" y="144" fill="#6ee7b7" font-family="monospace" font-size="9">88D0 E174 9B61 F032</text>
+    </g>
+
+    <text x="26" y="172" fill="#f59e0b" font-family="monospace" font-size="10" font-weight="700">[16B GCM Auth Tag]</text>
+    <text x="26" y="190" fill="#9ca3af" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="9">Zero-trust safe for relay</text>
+  </g>
+</svg>

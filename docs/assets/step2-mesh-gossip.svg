@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0f19" />
+      <stop offset="100%" stop-color="#161b22" />
+    </linearGradient>
+    <linearGradient id="bridgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="deviceGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <filter id="neonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <style>
+      @keyframes blePulse {
+        0% { r: 16px; opacity: 0.9; stroke-width: 2.5; }
+        50% { opacity: 0.4; }
+        100% { r: 52px; opacity: 0; stroke-width: 0.5; }
+      }
+      @keyframes packetHop {
+        0%, 15% { transform: translate(114px, 175px); }
+        25%, 35% { transform: translate(274px, 175px); }
+        45%, 55% { transform: translate(434px, 175px); }
+        65%, 75% { transform: translate(594px, 175px); }
+        85%, 100% { transform: translate(754px, 175px); }
+      }
+      @keyframes hopArrow {
+        0%, 100% { opacity: 0.3; stroke-dashoffset: 24; }
+        50% { opacity: 1; stroke-dashoffset: 0; }
+      }
+      .ble-ring-1 { animation: blePulse 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; }
+      .ble-ring-2 { animation: blePulse 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 0.6s infinite; }
+      .ble-ring-3 { animation: blePulse 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 1.2s infinite; }
+      .ble-ring-4 { animation: blePulse 2.4s cubic-bezier(0.2, 0.8, 0.2, 1) 1.8s infinite; }
+      .moving-packet { animation: packetHop 6s ease-in-out infinite; }
+      .hop-path { stroke-dasharray: 6, 6; animation: hopArrow 2s linear infinite; }
+    </style>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="880" height="340" rx="16" fill="url(#bgGrad2)" stroke="#30363d" stroke-width="1.5" />
+
+  <!-- Section Header -->
+  <g transform="translate(32, 34)">
+    <circle cx="10" cy="10" r="10" fill="#38bdf8" fill-opacity="0.2" />
+    <text x="10" y="15" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="12" font-weight="700" text-anchor="middle">2</text>
+    <text x="32" y="15" fill="#f0f6fc" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="15" font-weight="700" letter-spacing="0.3">STEP 2: PEER-TO-PEER BLUETOOTH MESH GOSSIP (MULTI-HOP RELAY)</text>
+    <rect x="710" y="0" width="138" height="22" rx="11" fill="#38bdf8" fill-opacity="0.15" stroke="#38bdf8" stroke-width="1" />
+    <text x="779" y="15" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="10" font-weight="700" text-anchor="middle">📶 BLE ADV / GATT</text>
+  </g>
+
+  <!-- Gossip Connecting Curved Hop Lines -->
+  <path d="M 114 175 C 194 110, 194 110, 274 175" fill="none" stroke="#38bdf8" stroke-width="2" class="hop-path" />
+  <path d="M 274 175 C 354 110, 354 110, 434 175" fill="none" stroke="#38bdf8" stroke-width="2" class="hop-path" />
+  <path d="M 434 175 C 514 110, 514 110, 594 175" fill="none" stroke="#38bdf8" stroke-width="2" class="hop-path" />
+  <path d="M 594 175 C 674 110, 674 110, 754 175" fill="none" stroke="#10b981" stroke-width="2.5" class="hop-path" />
+
+  <!-- Animated BLE Waves radiating from nodes -->
+  <circle cx="114" cy="175" class="ble-ring-1" fill="none" stroke="#38bdf8" />
+  <circle cx="274" cy="175" class="ble-ring-2" fill="none" stroke="#60a5fa" />
+  <circle cx="434" cy="175" class="ble-ring-3" fill="none" stroke="#818cf8" />
+  <circle cx="594" cy="175" class="ble-ring-4" fill="none" stroke="#a78bfa" />
+  <circle cx="754" cy="175" class="ble-ring-1" fill="none" stroke="#34d399" />
+
+  <!-- Node 1: phone-alice -->
+  <g transform="translate(54, 90)">
+    <rect width="120" height="170" rx="12" fill="url(#deviceGrad)" stroke="#38bdf8" stroke-width="1.5" />
+    <rect x="0" y="0" width="120" height="28" rx="12" fill="#1e293b" />
+    <text x="60" y="18" fill="#e2e8f0" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">phone-alice</text>
+    <rect x="18" y="38" width="84" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="60" y="52" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <circle cx="60" cy="85" r="16" fill="#0f172a" stroke="#38bdf8" stroke-width="1.5" />
+    <text x="60" y="90" fill="#38bdf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" text-anchor="middle">📱</text>
+    <text x="60" y="125" fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="middle">TTL: 5</text>
+    <rect x="20" y="136" width="80" height="18" rx="4" fill="#1e293b" />
+    <text x="60" y="149" fill="#38bdf8" font-family="monospace" font-size="9" font-weight="600" text-anchor="middle">Originated</text>
+  </g>
+
+  <!-- Node 2: phone-stranger1 -->
+  <g transform="translate(214, 90)">
+    <rect width="120" height="170" rx="12" fill="url(#deviceGrad)" stroke="#60a5fa" stroke-width="1" />
+    <rect x="0" y="0" width="120" height="28" rx="12" fill="#1e293b" />
+    <text x="60" y="18" fill="#e2e8f0" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">stranger-1</text>
+    <rect x="18" y="38" width="84" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="60" y="52" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <circle cx="60" cy="85" r="16" fill="#0f172a" stroke="#60a5fa" stroke-width="1.5" />
+    <text x="60" y="90" fill="#60a5fa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" text-anchor="middle">📱</text>
+    <text x="60" y="125" fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="middle">TTL: 4</text>
+    <rect x="20" y="136" width="80" height="18" rx="4" fill="#1e293b" />
+    <text x="60" y="149" fill="#60a5fa" font-family="monospace" font-size="9" font-weight="600" text-anchor="middle">Hop 1 (Escalator)</text>
+  </g>
+
+  <!-- Node 3: phone-stranger2 -->
+  <g transform="translate(374, 90)">
+    <rect width="120" height="170" rx="12" fill="url(#deviceGrad)" stroke="#818cf8" stroke-width="1" />
+    <rect x="0" y="0" width="120" height="28" rx="12" fill="#1e293b" />
+    <text x="60" y="18" fill="#e2e8f0" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">stranger-2</text>
+    <rect x="18" y="38" width="84" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="60" y="52" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <circle cx="60" cy="85" r="16" fill="#0f172a" stroke="#818cf8" stroke-width="1.5" />
+    <text x="60" y="90" fill="#818cf8" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" text-anchor="middle">📱</text>
+    <text x="60" y="125" fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="middle">TTL: 3</text>
+    <rect x="20" y="136" width="80" height="18" rx="4" fill="#1e293b" />
+    <text x="60" y="149" fill="#818cf8" font-family="monospace" font-size="9" font-weight="600" text-anchor="middle">Hop 2 (Corridor)</text>
+  </g>
+
+  <!-- Node 4: phone-stranger3 -->
+  <g transform="translate(534, 90)">
+    <rect width="120" height="170" rx="12" fill="url(#deviceGrad)" stroke="#a78bfa" stroke-width="1" />
+    <rect x="0" y="0" width="120" height="28" rx="12" fill="#1e293b" />
+    <text x="60" y="18" fill="#e2e8f0" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">stranger-3</text>
+    <rect x="18" y="38" width="84" height="20" rx="10" fill="#ef4444" fill-opacity="0.2" stroke="#ef4444" stroke-width="1" />
+    <text x="60" y="52" fill="#f87171" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🚫 OFFLINE</text>
+    <circle cx="60" cy="85" r="16" fill="#0f172a" stroke="#a78bfa" stroke-width="1.5" />
+    <text x="60" y="90" fill="#a78bfa" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" text-anchor="middle">📱</text>
+    <text x="60" y="125" fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="middle">TTL: 2</text>
+    <rect x="20" y="136" width="80" height="18" rx="4" fill="#1e293b" />
+    <text x="60" y="149" fill="#a78bfa" font-family="monospace" font-size="9" font-weight="600" text-anchor="middle">Hop 3 (Exit Ramp)</text>
+  </g>
+
+  <!-- Node 5: phone-bridge (Has Internet) -->
+  <g transform="translate(694, 90)">
+    <rect width="130" height="170" rx="12" fill="url(#bridgeGrad)" stroke="#10b981" stroke-width="2" />
+    <rect x="0" y="0" width="130" height="28" rx="12" fill="#065f46" />
+    <text x="65" y="18" fill="#ecfdf5" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle">phone-bridge</text>
+    <rect x="20" y="38" width="90" height="20" rx="10" fill="#10b981" fill-opacity="0.3" stroke="#10b981" stroke-width="1" />
+    <text x="65" y="52" fill="#6ee7b7" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">🌐 4G ONLINE</text>
+    <circle cx="65" cy="85" r="16" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
+    <text x="65" y="90" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="14" text-anchor="middle">📡</text>
+    <text x="65" y="125" fill="#a7f3d0" font-family="monospace" font-size="9" text-anchor="middle">TTL: 1 (Ready)</text>
+    <rect x="15" y="136" width="100" height="18" rx="4" fill="#047857" />
+    <text x="65" y="149" fill="#ecfdf5" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">BRIDGE UPLOAD</text>
+  </g>
+
+  <!-- Animated Moving Packet Orb -->
+  <g class="moving-packet">
+    <circle cx="0" cy="0" r="10" fill="#38bdf8" filter="url(#neonGlow)" />
+    <circle cx="0" cy="0" r="5" fill="#ffffff" />
+    <text x="0" y="-14" fill="#38bdf8" font-family="monospace" font-size="9" font-weight="700" text-anchor="middle">pkt-987</text>
+  </g>
+
+  <!-- Bottom Annotation -->
+  <g transform="translate(54, 285)">
+    <rect width="770" height="32" rx="6" fill="#0d1117" stroke="#30363d" stroke-width="1" />
+    <text x="20" y="21" fill="#8b949e" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11">
+      💡 <tspan fill="#e6edf3" font-weight="600">Zero-Trust Intermediaries:</tspan> Strangers cannot inspect amount/PIN or forge recipient. Packets hop until an online node is reached.
+    </text>
+  </g>
+</svg>
